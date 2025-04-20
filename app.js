@@ -42,7 +42,7 @@ function renderBoard() {
       const row = Math.floor((val - 1) / size);
       const col = (val - 1) % size;
 
-      tile.style.backgroundImage = "url('puzzle.jpg')";
+      tile.style.backgroundImage = "url('puzzle.png')";
       tile.style.backgroundSize = `${tileSize * size}px ${tileSize * size}px`;
       tile.style.backgroundPosition = `-${col * tileSize}px -${row * tileSize}px`;
 
