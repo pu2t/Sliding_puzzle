@@ -1,84 +1,84 @@
-const size = 3;
-const tileSize = 100;
-let board = [];
+const gridSize = 3;
+let tiles = [];
+let emptyTile = { x: gridSize - 1, y: gridSize - 1 };
 
-function initBoard() {
-  board = [...Array(size * size).keys()];
-  do {
-    board = shuffle(board);
-  } while (!isSolvable(board) || isSolved(board));
-  renderBoard();
-}
+window.onload = () => {
+  createTiles();
+  shuffleTiles();
+  renderTiles();
+};
 
-function shuffle(arr) {
-  return arr.sort(() => Math.random() - 0.5);
-}
-
-function isSolvable(board) {
-  let inv = 0;
-  for (let i = 0; i < board.length; i++) {
-    for (let j = i + 1; j < board.length; j++) {
-      if (board[i] && board[j] && board[i] > board[j]) inv++;
+function createTiles() {
+  for (let y = 0; y < gridSize; y++) {
+    for (let x = 0; x < gridSize; x++) {
+      if (x === gridSize - 1 && y === gridSize - 1) continue;
+      tiles.push({ x, y, correctX: x, correctY: y });
     }
   }
-  return inv % 2 === 0;
 }
 
-function isSolved(board) {
-  return board.every((val, i) => val === i);
-}
+function shuffleTiles() {
+  for (let i = tiles.length - 1; i > 0; i--) {
+    const j = Math.floor(Math.random() * (i + 1));
+    [tiles[i], tiles[j]] = [tiles[j], tiles[i]];
+  }
 
-function renderBoard() {
-  const boardEl = document.getElementById("board");
-  boardEl.innerHTML = "";
-
-  board.forEach((val, i) => {
-    const tile = document.createElement("div");
-    tile.className = "tile";
-
-    if (val === 0) {
-      tile.classList.add("empty");
-    } else {
-      const row = Math.floor((val - 1) / size);
-      const col = (val - 1) % size;
-
-      tile.style.backgroundImage = "url('puzzle.png')";
-      tile.style.backgroundSize = `${tileSize * size}px ${tileSize * size}px`;
-      tile.style.backgroundPosition = `-${col * tileSize}px -${row * tileSize}px`;
-
-      tile.setAttribute("draggable", "true");
-
-      tile.addEventListener("dragstart", (e) => {
-        e.dataTransfer.setData("text/plain", i);
-      });
-
-      tile.addEventListener("dragover", (e) => {
-        const emptyIndex = board.indexOf(0);
-        if (i === emptyIndex) e.preventDefault();
-      });
-
-      tile.addEventListener("drop", (e) => {
-        e.preventDefault();
-        const fromIndex = parseInt(e.dataTransfer.getData("text/plain"));
-        const toIndex = i;
-        const emptyIndex = board.indexOf(0);
-
-        if (toIndex === emptyIndex) {
-          const validMoves = [
-            emptyIndex - 1, emptyIndex + 1,
-            emptyIndex - size, emptyIndex + size,
-          ];
-          if (validMoves.includes(fromIndex)) {
-            [board[fromIndex], board[toIndex]] = [board[toIndex], board[fromIndex]];
-            renderBoard();
-            if (isSolved(board)) alert("🎉 Puzzle Completed!");
-          }
-        }
-      });
-    }
-
-    boardEl.appendChild(tile);
+  // Letakkan di posisi acak dalam grid
+  tiles.forEach((tile, index) => {
+    tile.x = index % gridSize;
+    tile.y = Math.floor(index / gridSize);
   });
+
+  emptyTile = { x: gridSize - 1, y: gridSize - 1 };
 }
 
-window.onload = initBoard;
+function renderTiles() {
+  const board = document.getElementById('puzzle-board');
+  board.innerHTML = '';
+
+  for (let y = 0; y < gridSize; y++) {
+    for (let x = 0; x < gridSize; x++) {
+      const tile = tiles.find(t => t.x === x && t.y === y);
+      const tileElement = document.createElement('div');
+      tileElement.classList.add('tile');
+
+      if (tile) {
+        tileElement.style.backgroundImage = 'url("puzzle.png")';
+        tileElement.style.backgroundSize = `${gridSize * 100}% ${gridSize * 100}%`;
+        tileElement.style.backgroundPosition = `-${tile.correctX * 100}px -${tile.correctY * 100}px`;
+        tileElement.addEventListener('click', () => moveTile(tile));
+      } else {
+        tileElement.classList.add('empty');
+      }
+
+      board.appendChild(tileElement);
+    }
+  }
+}
+
+function moveTile(tile) {
+  const dx = Math.abs(tile.x - emptyTile.x);
+  const dy = Math.abs(tile.y - emptyTile.y);
+
+  if ((dx === 1 && dy === 0) || (dx === 0 && dy === 1)) {
+    const oldX = tile.x;
+    const oldY = tile.y;
+
+    tile.x = emptyTile.x;
+    tile.y = emptyTile.y;
+
+    emptyTile.x = oldX;
+    emptyTile.y = oldY;
+
+    renderTiles();
+    checkWin();
+  }
+}
+
+function checkWin() {
+  const isWin = tiles.every(t => t.x === t.correctX && t.y === t.correctY);
+
+  if (isWin && emptyTile.x === gridSize - 1 && emptyTile.y === gridSize - 1) {
+    setTimeout(() => alert('Selamat! Kamu menyelesaikan puzzle!'), 200);
+  }
+}
