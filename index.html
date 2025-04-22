@@ -8,11 +8,36 @@
 </head>
 <body>
   <h1>Sliding Puzzle Game</h1>
-<div id="puzzle-board" class="board"></div>  
+
+  <div id="user-info"></div>
+  <div id="puzzle-board" class="board"></div>  
+
+  <!-- Game Logic -->
   <script src="app.js"></script>
+
+  <!-- Telegram SDK -->
+  <script src="https://telegram.org/js/telegram-web-app.js"></script>
   <script>
-    // Telegram Web App Initialization
-    window.Telegram.WebApp.init();
+    // Inisialisasi Telegram WebApp
+    window.Telegram.WebApp.ready();
+    Telegram.WebApp.expand(); // Membuka ke tampilan penuh
+
+    // Akses data pengguna
+    const user = Telegram.WebApp.initDataUnsafe?.user;
+    if (user) {
+      document.getElementById("user-info").innerHTML = `
+        <p>👋 Halo, <strong>${user.first_name}</strong>!</p>
+      `;
+    } else {
+      document.getElementById("user-info").innerHTML = `
+        <p>🚫 Tidak bisa mendapatkan info pengguna.</p>
+      `;
+    }
+
+    // (Opsional) Dark Mode
+    if (Telegram.WebApp.colorScheme === 'dark') {
+      document.body.classList.add('dark-mode');
+    }
   </script>
 </body>
 </html>
