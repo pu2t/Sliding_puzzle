@@ -1,55 +1,62 @@
-body {
-  font-family: sans-serif;
-  text-align: center;
-  background: #fafafa;
-  margin-top: 20px;
-}
-
-h1 {
-  font-size: 2em;
-  margin-bottom: 20px;
-}
-.puzzle-container {
-  width: 100%;
-  aspect-ratio: 1 / 1;
-  max-width: 400px;
-  margin: 0 auto;
-  display: grid;
-  grid-template-columns: repeat(3, 1fr);
-  gap: 2px;
-  background-color: #333;
-  border: 5px solid #333;
-  border-radius: 8px;
+   * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
         }
-.board {
-  width: 300px;
-  height: 300px;
-  margin: auto;
-  display: grid;
-  grid-template-columns: repeat(3, 100px);
-  grid-template-rows: repeat(3, 100px);
-  gap: 2px;
-}
 
-.tile {
-  width: 100px;
-  height: 100px;
-  background-color: #ddd;
-  cursor: grab;
-  box-shadow: inset 0 0 5px #0005;
-  transition: transform 0.1s ease;
-  background-repeat: no-repeat;
-  background-size: 300px 300px; /* Ukuran total gambar puzzle */
-}
+        body {
+            font-family: Arial, sans-serif;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            min-height: 100vh;
+            background-color: #f0f0f0;
+            overflow-x: hidden;
+        }
 
-.tile.empty {
-  background: #eee;
-  cursor: default;
-}
+        .container {
+            width: 100%;
+            max-width: 500px;
+            padding: 10px;
+            display: flex;
+            flex-direction: column;
+            height: 100vh;
+            justify-content: space-between;
+        }
 
-.tile:active {
-  transform: scale(0.98);
-}
+        .puzzle-container {
+            width: 100%;
+            aspect-ratio: 1 / 1;
+            max-width: 400px;
+            margin: 0 auto;
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 2px;
+            background-color: #333;
+            border: 5px solid #333;
+            border-radius: 8px;
+        }
+
+        .puzzle-piece, tile {
+            width: 100%;
+            height: 100%;
+            background-color: #fff;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 2rem;
+            font-weight: bold;
+            color: #333;
+            cursor: pointer;
+            user-select: none;
+            background-size: cover;
+            background-position: center;
+        }
+
+        .empty {
+            background-color: #333;
+        }
+
         .button-container {
             width: 100%;
             max-width: 400px;
